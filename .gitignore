@@ -1,0 +1,7 @@
+*.c
+*.pyc
+*.pyd
+
+build/
+.idea/
+.cache/
