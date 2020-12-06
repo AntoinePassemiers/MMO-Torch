@@ -23,10 +23,10 @@ class EuclideanManifold(Manifold):
         return torch.sum(G * H)
 
     def _distance(self, X, Y):
-        return torch.linalg.norm(X - Y, ord='fro')
+        return torch.norm(X - Y, p='fro')
 
     def _norm(self, X, G):
-        return torch.linalg.norm(G, ord='fro')
+        return torch.norm(G, p='fro')
 
     def _ndim(self):
         return self.n * self.m

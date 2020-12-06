@@ -27,7 +27,7 @@ class PositiveEntriesManifold(Manifold):
         return torch.sum((G * H) / (X * X))
 
     def _distance(self, X, Y):
-        return torch.linalg.norm(torch.log(X) - torch.log(Y), ord='fro')
+        return torch.norm(torch.log(X) - torch.log(Y), p='fro')
 
     def _norm(self, X, G):
         return torch.sqrt(self.inner(X, G, G))

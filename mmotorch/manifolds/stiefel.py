@@ -31,7 +31,7 @@ class StiefelManifold(Manifold):
         raise NotImplementedError
 
     def _norm(self, X, G):
-        return torch.linalg.norm(G, ord='fro')
+        return torch.norm(G, p='fro')
 
     def _ndim(self):
         return self.k * (self.n * self.m - self.m * (self.m + 1) // 2)

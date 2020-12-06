@@ -5,3 +5,5 @@
 build/
 .idea/
 .cache/
+dist/
+mmmotorch.egg-info/

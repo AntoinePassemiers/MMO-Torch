@@ -5,6 +5,7 @@
 from mmotorch.manifolds.base import Manifold
 
 import numpy as np
+import torch
 
 
 class ObliqueManifold(Manifold):
@@ -28,11 +29,11 @@ class ObliqueManifold(Manifold):
 
     def _distance(self, X, Y):
         colsums = torch.sum(X * Y, 0)
-        colsums = torch.minimum(colsums, 1)
-        return torch.linalg.norm(torch.arccos(colsums), ord='fro')
+        colsums = torch.clamp(colsums, -1, 1)
+        return torch.norm(torch.acos(colsums), p='fro')
 
     def _norm(self, X, G):
-        return torch.linalg.norm(G, ord='fro')
+        return torch.norm(G, p='fro')
 
     def _ndim(self):
         return (self.m - 1) * self.n

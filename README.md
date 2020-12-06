@@ -18,7 +18,7 @@ a Riemannian optimizer:
 ```python
 from mmotorch.optim import RiemannianSGD
 
-optimizer = RiemannianSGD([W], lr=1e-2)
+optimizer = RiemannianSGD([W], lr=1e-3)
 ```
 
 Perform inference, the usual way. Following example looks for the orthogonal projection

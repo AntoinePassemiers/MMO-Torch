@@ -13,7 +13,7 @@ Y = torch.rand(100, 40)
 manifold = StiefelManifold(40, 40)
 W = manifold.init()
 
-optimizer = RiemannianSGD([W], lr=1e-2)
+optimizer = RiemannianSGD([W], lr=1e-3)
 
 for _ in range(50):
     Y_hat = X.mm(W)

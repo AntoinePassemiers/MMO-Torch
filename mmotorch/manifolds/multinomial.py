@@ -5,6 +5,7 @@
 from mmotorch.manifolds.base import Manifold
 
 import numpy as np
+import torch
 
 
 class MultinomialManifold(Manifold):
@@ -37,7 +38,7 @@ class MultinomialManifold(Manifold):
         return torch.sum((G * H) / X)
 
     def _distance(self, X, Y):
-        return torch.linalg.norm(2. * torch.acos(torch.sum(torch.sqrt(X * Y), 1)), ord='fro')
+        return torch.norm(2. * torch.acos(torch.sum(torch.sqrt(X * Y), 1)), p='fro')
 
     def _norm(self, X, G):
         return torch.sqrt(self.inner(X, G, G))
