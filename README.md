@@ -16,12 +16,16 @@ The Manifold.init() method returns a torch.nn.Parameter object.
 Actual optimization over the manifold is enabled by passing it to
 a Riemannian optimizer:
 ```python
+from mmotorch.optim import RiemannianSGD
+
 optimizer = RiemannianSGD([W], lr=1e-2)
 ```
 
 Perform inference, the usual way. Following example looks for the orthogonal projection
 that minimizes mean squared error.
 ```python
+import torch
+
 X = torch.rand(100, 40)
 Y = torch.rand(100, 40)
 
