@@ -19,7 +19,8 @@ a Riemannian optimizer:
 optimizer = RiemannianSGD([W], lr=1e-2)
 ```
 
-Perform inference, the usual way:
+Perform inference, the usual way. Following example looks for the orthogonal projection
+that minimizes mean squared error.
 ```python
 X = torch.rand(100, 40)
 Y = torch.rand(100, 40)
@@ -51,3 +52,9 @@ Install the package :
 ```
 python setup.py install
 ```
+
+TODO
+----
+
+Only few manifolds are supported at the moment.
+More will be coming in the future.
