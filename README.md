@@ -13,7 +13,7 @@ W = manifold.init()
 ```
 
 The Manifold.init() method returns a torch.nn.Parameter object.
-Optimization over the manifold is enabled by passing it to
+Actual optimization over the manifold is enabled by passing it to
 a Riemannian optimizer:
 ```python
 optimizer = RiemannianSGD([W], lr=1e-2)
@@ -40,7 +40,7 @@ Installation
 ### Dependencies
 
 
-To get ArchMM to work on your computer, you will need:
+To get MMO-Torch to work on your computer, you will need:
 
 - Python
 - Numpy (>= 1.6.1)
