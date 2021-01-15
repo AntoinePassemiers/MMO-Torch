@@ -18,7 +18,7 @@ class MultinomialManifold(Manifold):
     def _init(self):
         X = np.random.rand(self.n, self.m)
         assert(X.shape == (self.n, self.m))
-        X /= np.linalg.norm(X, axis=0)[np.newaxis, :]
+        X /= np.linalg.norm(X, axis=0)[np.newaxis, :]  # TODO
         return X ** 2.
 
     def _step(self, X, G):

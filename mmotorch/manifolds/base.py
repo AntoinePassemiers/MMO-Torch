@@ -11,9 +11,8 @@ import torch
 
 class Manifold(metaclass=ABCMeta):
 
-    def __init__(self, n, m, lb=None, ub=None):
-        self.n = n
-        self.m = m
+    def __init__(self, *shape, lb=None, ub=None):
+        self._shape = tuple(shape)
         self.lb = lb
         self.ub = ub
 
@@ -82,4 +81,13 @@ class Manifold(metaclass=ABCMeta):
     
     @property
     def shape(self):
-        return (self.n, self.m)
+        return self._shape
+
+    @property
+    def n(self):
+        return self.shape[0]
+
+    @property
+    def m(self):
+        return self.shape[1]
+    
