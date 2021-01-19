@@ -10,7 +10,7 @@ import torch
 
 class MultinomialManifold(Manifold):
 
-    def __init__(self, n, m, le=False, epsilon=1e-7, **kwargs):
+    def __init__(self, n, m, le=False, epsilon=1e-8, **kwargs):
         Manifold.__init__(self, n, m, **kwargs)
         self.le = le
         self.epsilon = epsilon
@@ -18,11 +18,14 @@ class MultinomialManifold(Manifold):
     def _init(self):
         X = np.random.rand(self.n, self.m)
         assert(X.shape == (self.n, self.m))
-        X /= np.linalg.norm(X, axis=0)[np.newaxis, :]  # TODO
-        return X ** 2.
+        X /= np.sum(X, axis=0)[np.newaxis, :]
+        return X
 
     def _step(self, X, G):
-        Y = X * np.exp(G / np.maximum(X, self.epsilon))
+        tmp = G / np.maximum(X, self.epsilon)
+        Y = X * np.exp(tmp)
+        mask = np.isinf(Y)
+        Y[mask] = X[mask]
         Y = np.nan_to_num(Y)
         s = Y.sum(axis=0)
         if self.le:
@@ -30,8 +33,10 @@ class MultinomialManifold(Manifold):
             mask[np.isnan(mask)] = True
         else:
             mask = np.ones(len(s), dtype=np.bool)
+        s = np.nan_to_num(s) + self.epsilon
         Y[:, mask] /= s[np.newaxis, mask]
         Y = np.maximum(Y, self.epsilon)
+        assert(not np.any(np.isnan(Y)))
         return Y
 
     def _inner(self, X, G, H):
