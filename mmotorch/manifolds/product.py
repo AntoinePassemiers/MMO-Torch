@@ -14,8 +14,11 @@ class ProductManifold:
     def init(self):
         return [manifold.init() for manifold in self.manifolds]
 
-    def step(self, X, G):
-        return [manifold.step(x, g) for x, g, manifold in zip(X, G, self.manifolds)]
+    def _egrad_to_rgrad(self, X, G):
+        return [manifold._egrad_to_rgrad(x, g) for x, g, manifold in zip(X, G, self.manifolds)]
+
+    def _retraction(self, X, G):
+        return [manifold._retraction(x, g) for x, g, manifold in zip(X, G, self.manifolds)]
 
     def inner(self, X, G, H):
         return [manifold.inner(x, g, h) for x, g, h, manifold in zip(X, G, self.manifolds)]

@@ -16,12 +16,13 @@ class TransposeManifold(Manifold):
         self.manifold = manifold
 
     def _init(self):
-        X = self.manifold._init()
-        return X.T
+        return self.manifold._init().T
 
-    def _step(self, X, G):
-        X_new = self.manifold.step(X.T, G.T)
-        return X_new.T
+    def _egrad_to_rgrad(self, X, G):
+        return self.manifold._egrad_to_rgrad(X.T, G.T).T
+
+    def _retraction(self, X, G):
+        return self.manifold._retraction(X.T, G.T).T
 
     def _inner(self, X, G, H):
         return self.manifold.inner(X, G, H)

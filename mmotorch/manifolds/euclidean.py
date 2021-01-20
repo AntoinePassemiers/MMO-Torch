@@ -16,7 +16,10 @@ class EuclideanManifold(Manifold):
     def _init(self):
         return np.random.normal(0, 1, size=(self.n, self.m))
 
-    def _step(self, X, G):
+    def _egrad_to_rgrad(self, X, G):
+        return G
+
+    def _retraction(self, X, G):
         return X + G
 
     def _inner(self, X, G, H):

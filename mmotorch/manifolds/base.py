@@ -27,13 +27,17 @@ class Manifold(metaclass=ABCMeta):
         return param
 
     @abstractmethod
-    def _step(self, X, G):
+    def _egrad_to_rgrad(self, X, G):
+        pass
+
+    @abstractmethod
+    def _retraction(self, X, G):
         pass
 
     def step(self, X, G):
         X = ensure_numpy(X)
         G = ensure_numpy(G)
-        X_prime = self._step(X, G)
+        X_prime = self._retraction(X, self._egrad_to_rgrad(X, G))
         return ensure_torch(self._clip_values(X_prime))
 
     def _clip_values(self, X):
@@ -90,4 +94,3 @@ class Manifold(metaclass=ABCMeta):
     @property
     def m(self):
         return self.shape[1]
-    

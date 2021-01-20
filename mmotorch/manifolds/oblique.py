@@ -19,7 +19,13 @@ class ObliqueManifold(Manifold):
         X /= np.linalg.norm(X, axis=0)[np.newaxis, :]
         return X
 
-    def _step(self, X, G):
+    def _tangent_space_projection(self, X, H):
+        return H - X.dot(np.diag(np.diag(X.T.dot(H))))
+
+    def _egrad_to_rgrad(self, X, G):
+        return self._tangent_space_projection(X, G)
+
+    def _retraction(self, X, G):
         U = X + G
         U /= np.linalg.norm(U, axis=0)[np.newaxis, :]
         return U

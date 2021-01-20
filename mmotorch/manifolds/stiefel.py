@@ -20,7 +20,10 @@ class StiefelManifold(Manifold):
         assert(X.shape == q.shape)
         return torch.nn.Parameter(torch.FloatTensor(q))
 
-    def _step(self, X, G):
+    def _egrad_to_rgrad(self, X, G):
+        return G  # TODO
+
+    def _retraction(self, X, G):
         q, r = np.linalg.qr(X + G)
         return np.dot(q, np.diag(np.sign(np.sign(np.diag(r)) + 0.5)))
 

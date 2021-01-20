@@ -6,6 +6,7 @@ from mmotorch.manifolds.base import Manifold
 
 import numpy as np
 import torch
+import scipy.special
 
 
 class MultinomialManifold(Manifold):
@@ -21,21 +22,19 @@ class MultinomialManifold(Manifold):
         X /= np.sum(X, axis=0)[np.newaxis, :]
         return X
 
-    def _step(self, X, G):
-        tmp = G / np.maximum(X, self.epsilon)
-        Y = X * np.exp(tmp)
-        mask = np.isinf(Y)
-        Y[mask] = X[mask]
-        Y = np.nan_to_num(Y)
-        s = Y.sum(axis=0)
-        if self.le:
-            mask = (s > 1)
-            mask[np.isnan(mask)] = True
-        else:
-            mask = np.ones(len(s), dtype=np.bool)
-        s = np.nan_to_num(s) + self.epsilon
-        Y[:, mask] /= s[np.newaxis, mask]
+    def _tangent_space_projection(self, X, H):
+        return H - np.sum(H, axis=0)[np.newaxis, :] * X
+
+    def _egrad_to_rgrad(self, X, G):
+        return self._tangent_space_projection(X, X * G)
+
+    def _retraction(self, X, G):
+        X = np.maximum(X, self.epsilon)
+        norm = scipy.special.logsumexp(G / X, b=X, axis=0)
+        Y = np.log(X) + (G / X) - norm[np.newaxis, :]
+        Y = np.exp(Y)
         Y = np.maximum(Y, self.epsilon)
+
         assert(not np.any(np.isnan(Y)))
         return Y
 

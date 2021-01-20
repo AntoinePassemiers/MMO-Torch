@@ -17,7 +17,10 @@ class PositiveEntriesManifold(Manifold):
     def _init(self):
         return np.random.rand(self.n, self.m)
 
-    def _step(self, X, G):
+    def _egrad_to_rgrad(self, X, G):
+        return X * X * G
+
+    def _retraction(self, X, G):
         Y = X * np.exp(G / np.maximum(X, self.epsilon))
         Y = np.nan_to_num(Y)
         Y = np.maximum(Y, self.epsilon)
