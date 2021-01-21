@@ -11,9 +11,9 @@ import scipy.special
 
 class MultinomialManifold(Manifold):
 
-    def __init__(self, n, m, le=False, epsilon=1e-8, **kwargs):
+    def __init__(self, n, m, strict_simplex=False, epsilon=1e-8, **kwargs):
         Manifold.__init__(self, n, m, **kwargs)
-        self.le = le
+        self.strict_simplex = strict_simplex
         self.epsilon = epsilon
 
     def _init(self):
@@ -31,7 +31,12 @@ class MultinomialManifold(Manifold):
     def _retraction(self, X, G):
         X = np.maximum(X, self.epsilon)
         norm = scipy.special.logsumexp(G / X, b=X, axis=0)
-        Y = np.log(X) + (G / X) - norm[np.newaxis, :]
+        Y = np.log(X) + (G / X)
+        if self.strict_simplex:
+            Y -= norm[np.newaxis, :]
+        else:
+            mask = (norm > 0)
+            Y[:, mask] -= norm[np.newaxis, mask]
         Y = np.exp(Y)
         Y = np.maximum(Y, self.epsilon)
 
