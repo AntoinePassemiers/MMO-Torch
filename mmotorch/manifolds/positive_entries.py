@@ -11,29 +11,45 @@ import warnings
 
 class PositiveEntriesManifold(Manifold):
 
-    def __init__(self, *shape, epsilon=1e-8, **kwargs):
+    def __init__(self, *shape, epsilon=1e-8, fast=False, **kwargs):
         Manifold.__init__(self, *shape, **kwargs)
         self.epsilon = epsilon
+        self.fast = fast
 
     def _init(self):
         return np.exp(np.random.rand(self.n, self.m))
 
     def _egrad_to_rgrad(self, X, G):
-        return X * G * X
+        if self.fast:
+            return G
+        else:
+            G_prime = X * G
+            G_prime *= X
+            return G_prime
 
     def _retraction(self, X, G):
-        X = np.maximum(X, self.epsilon)
-        Y = np.log(X) + (G / X)
-        Y = np.exp(Y)
-        if np.any(np.isnan(Y)) or np.any(np.isinf(Y)):
-            warnings.warn('Invalid value encountered during retraction mapping onto PositiveEntriesManifold')
-            mask = np.isinf(Y)
-            Y[mask] = X[mask]
-            Y = np.nan_to_num(Y)
-        Y = np.maximum(Y, self.epsilon)
+        Y = np.copy(X)
+        if self.fast:
+            Y += G
+            np.maximum(Y, self.epsilon, out=Y)
+        else:
+            np.maximum(Y, self.epsilon, out=Y)
+            Y[:] = np.log(Y, out=Y) + (G / Y)  # TODO: slow
+            np.exp(Y, out=Y)
+            if np.any(np.isinf(Y)):
+                warnings.warn('Invalid value encountered during retraction mapping onto PositiveEntriesManifold')
+                mask = np.isinf(Y)
+                Y[mask] = X[mask]
+            if np.any(np.isnan(Y)):
+                warnings.warn('Invalid value encountered during retraction mapping onto PositiveEntriesManifold')
+                np.nan_to_num(Y, copy=False)
+            np.maximum(Y, self.epsilon, out=Y)
 
-        # Weighted geometric mean for smoothing
-        Y = np.exp(0.1 * np.log(Y) + 0.9 * np.log(X))  # TODO
+            # Weighted geometric mean for smoothing
+            np.log(Y, out=Y)
+            Y *= 0.1
+            Y += 0.9 * np.log(X)
+            np.exp(Y, out=Y)
         return Y
 
     def _inner(self, X, G, H):
