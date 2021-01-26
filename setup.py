@@ -7,6 +7,7 @@ from setuptools import setup
 
 packages = [
     'mmotorch',
+    'mmotorch.logging',
     'mmotorch.manifolds',
     'mmotorch.nn',
     'mmotorch.optim'
