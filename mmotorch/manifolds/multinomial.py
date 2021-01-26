@@ -7,6 +7,7 @@ from mmotorch.manifolds.base import Manifold
 import numpy as np
 import torch
 import scipy.special
+import warnings
 
 
 class MultinomialManifold(Manifold):
@@ -40,8 +41,9 @@ class MultinomialManifold(Manifold):
         Y = np.exp(Y)
         Y = np.maximum(Y, self.epsilon)
 
-        assert(not np.any(np.isnan(Y)))
-        return Y
+        if np.any(np.isnan(Y)):
+            warnings.warn('Invalid value encountered during retraction mapping onto multinomial manifold')
+        return np.nan_to_num(Y)
 
     def _inner(self, X, G, H):
         return torch.sum((G * H) / X)
