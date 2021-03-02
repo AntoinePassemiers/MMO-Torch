@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# euclidean.py
+# fixed_sparsity.py
 # author: Antoine Passemiers
 
 from mmotorch.manifolds.base import Manifold
@@ -8,17 +8,17 @@ import numpy as np
 import torch
 
 
-class EuclideanManifold(Manifold):
+class FixedSparsityPatternManifold(Manifold):
 
-    def __init__(self, *shape, **kwargs):
-        Manifold.__init__(self, *shape, **kwargs)
-        self.shape = shape
+    def __init__(self, S, **kwargs):
+        self.S = np.asarray(S, dtype=np.bool)
+        Manifold.__init__(self, *self.S.shape, **kwargs)
 
     def _init(self):
-        return np.random.normal(0, 1, size=(self.n, self.m))
+        return self.S * np.random.rand(*self.S.shape)
 
     def _egrad_to_rgrad(self, X, G):
-        return G
+        return self.S * G
 
     def _retraction(self, X, G):
         return X + G
@@ -33,4 +33,4 @@ class EuclideanManifold(Manifold):
         return torch.norm(G, p='fro')
 
     def _ndim(self):
-        return np.prod(self.shape)
+        return np.prod(self.S.shape)

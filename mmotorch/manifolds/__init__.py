@@ -1,5 +1,6 @@
 from .base import *
 from .euclidean import *
+from .fixed_sparsity import *
 from .multinomial import *
 from .oblique import *
 from .positive_entries import *
