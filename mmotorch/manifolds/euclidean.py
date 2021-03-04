@@ -12,7 +12,7 @@ class EuclideanManifold(Manifold):
 
     def __init__(self, *shape, **kwargs):
         Manifold.__init__(self, *shape, **kwargs)
-        self.shape = shape
+        self._shape = shape
 
     def _init(self):
         return np.random.normal(0, 1, size=(self.n, self.m))
@@ -33,4 +33,4 @@ class EuclideanManifold(Manifold):
         return torch.norm(G, p='fro')
 
     def _ndim(self):
-        return np.prod(self.shape)
+        return np.prod(self._shape)
