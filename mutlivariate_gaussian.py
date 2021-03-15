@@ -3,7 +3,7 @@
 # author: Antoine Passemiers
 
 from mmotorch.manifolds import SPDMatrixManifold
-from mmotorch.optim import RiemannianSGD
+from mmotorch.optim import RiemannianSGD, LocalConvergence
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,13 +22,18 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.5, patience=3,
         verbose=True, threshold=0.00001, threshold_mode='rel',
         cooldown=0, min_lr=0, eps=1e-25)
+convergence = LocalConvergence(5, max_n_iter=1000)
 
-for _ in range(10000):
+while not convergence():
     loss = torch.trace(torch.mm(S, C)) - torch.logdet(S)
     loss.backward()
     optimizer.step()
-    print(loss.item(), np.linalg.cond(S.data.numpy()))
     scheduler.step(loss.item())
+    convergence.step(loss.item())
+print('Converged after %i iterations' % convergence.iterations)
 
+print('\nPrecision matrix:')
 print(np.linalg.inv(C.data.numpy()))
+
+print('\nMaximum likelihood estimator:')
 print(S.data.numpy())
