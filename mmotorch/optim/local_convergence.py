@@ -16,7 +16,7 @@ class LocalConvergence:
         self.best_loss = np.nan_to_num(np.inf)
 
     def step(self, loss):
-        gain = (self.best_loss - loss) / self.best_loss
+        gain = (self.best_loss - loss) / np.abs(self.best_loss)
         if gain > self.tau:
             self.nwi = 0
         else:
