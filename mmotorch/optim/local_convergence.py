@@ -26,4 +26,7 @@ class LocalConvergence:
         self.iterations += 1
 
     def __call__(self):
-        return (self.nwi >= self.n_steps_without_improvements)
+        if self.iterations >= self.max_n_iter:
+            return True
+        else:
+            return (self.nwi >= self.n_steps_without_improvements)
