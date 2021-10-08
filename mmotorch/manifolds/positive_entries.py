@@ -32,7 +32,6 @@ class PositiveEntriesManifold(Manifold):
         Y = np.copy(X)
         if self.fast:
             Y += G
-            np.maximum(Y, self.epsilon, out=Y)
         else:
             np.maximum(Y, self.epsilon, out=Y)
             Y[:] = np.log(Y, out=Y) + (G / Y)  # TODO: slow
@@ -51,6 +50,7 @@ class PositiveEntriesManifold(Manifold):
             Y *= 0.1
             Y += 0.9 * np.log(X)
             np.exp(Y, out=Y)
+        np.maximum(Y, self.epsilon, out=Y)
         return Y
 
     def _inner(self, X, G, H):

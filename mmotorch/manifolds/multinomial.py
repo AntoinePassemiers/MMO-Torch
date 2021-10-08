@@ -39,6 +39,10 @@ class MultinomialManifold(Manifold):
             mask = (norm > 0)
             Y[:, mask] -= norm[np.newaxis, mask]
         Y = np.exp(Y)
+
+        mask = np.any(np.isnan(Y), axis=0)
+        Y[:, mask] = X[:, mask]
+
         Y = np.maximum(Y, self.epsilon)
 
         if np.any(np.isnan(Y)):
