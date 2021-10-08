@@ -13,7 +13,7 @@ class PositiveEntriesManifold(Manifold):
 
     def __init__(self, *shape, epsilon=1e-8, fast=False, **kwargs):
         Manifold.__init__(self, *shape, **kwargs)
-        self.shape = shape
+        self._shape = shape
         self.epsilon = epsilon
         self.fast = fast
 
@@ -63,4 +63,4 @@ class PositiveEntriesManifold(Manifold):
         return torch.sqrt(self.inner(X, G, G))
 
     def _ndim(self):
-        return np.prod(self.shape)
+        return np.prod(self._shape)

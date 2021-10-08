@@ -16,6 +16,7 @@ W = manifold.init()
 optimizer = RiemannianSGD([W], lr=1e-3)
 
 for _ in range(50):
+	optimizer.zero_grad()
     Y_hat = X.mm(W)
     loss = torch.mean((Y_hat - Y) ** 2.)
     loss.backward()

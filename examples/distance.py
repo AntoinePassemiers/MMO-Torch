@@ -23,6 +23,7 @@ optimizer = RiemannianSGD([Y], lr=1e-5)
 
 # Minimize distance between the 2 matrices
 for _ in range(1000):
+	optimizer.zero_grad()
     loss = manifold.distance(X, Y)
     loss.backward()
     optimizer.step()
